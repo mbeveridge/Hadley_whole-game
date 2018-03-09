@@ -99,8 +99,54 @@ ggplot(permits_big, aes(date, f1units)) +
   geom_smooth(se = FALSE)
 ```
 
-"But it's still kind of hard to see, because of these 2 problems : That there's the pattern within the year, and it's still kind of hard to see individual cities"
+"But it's still a little hard to see, because we've got these 2 problems : That we've got the strong pattern within the year, and the cities are still kind of spread out"
 --[12:00 min]
+
+## Model
+
+"Can we do better? And to do that, we're going to use a model. Because models are really powerful tools for partitioning the signal. So we're going to try and partition this pattern - this signal - into this monthly component and then what's left, maybe this smoother long-term trend"
+
+"And it's going to be easiest to do that if I start by focusing on just one city..."
+
+```{r}
+houston <- permits %>% filter()
+xxxx
+
+ggplot(houston, aes(date, f1units)) +
+  geom_line(aes(group = area))
+```
+
+
+Question :
+
+* Is this pattern the same everywhere?
+* What drives it? Is it the weather?
+* Houston in July is less pleasant than Houston in Dec
+
+```{r}
+
+
+# Now, I don't believe that this is a good model. I'm just using it as a way to partition the signal into months [15:04min]
+
+# residuals ~16min
+
+```
+
+
+* What's driving this trend?
+* What happened around 2010?
+
+## Extend the model to every city [17:00min]
+
+```{r}
+
+```
+
+"much much easier to see the long-term trend, now that we've removed those short-term"
+"So let's just quickly recap what we're doing in this data analysis"
+[19:40min]
+
+
 
 
 
