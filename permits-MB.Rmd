@@ -1,0 +1,80 @@
+# US building permit
+
+```{r setup}
+library(tidyverse)
+```
+
+## Data import
+
+Data downloaded from https://www.recenter.tamu.edu/data/building-permits/
+
+```{r}
+permits_raw <- read_csv("dataPermit_full.csv", na = "null")      # change any "Null" to "NA"
+permits_raw                                                      # print data, to look at
+```
+
+* area = metropolitan standard area
+* date = month / year (character vector, or strings)
+* f1 = 1 family house; f24 = 2-4 families; f5 = 5+ family house
+* units = number of buildings; change in units; value = average value of building; valchange = change in value
+
+```{r}
+?separate
+
+permits <- permits_raw %>%
+  separate(date, c("month", "year"), "/", convert = TRUE) %>%     # `convert` to get m&y integers
+  filter(year > 2007) %>%         # last 10yrs. (`separate()` enables this filter, with a `year`)
+  select(-ends_with("change"))    # remove others' calculated fields, in case they are wrong
+permits
+```
+
+## Basic EDA
+
+```{r}
+# "...just to get a sense of (like) what's going on in this dataset.
+# And a really useful tool for that is just a `count()`"...
+permits %>% count(year)              # `n` is ~4500 per year
+permits %>% count(area)              # `n` is usually 119 per area...
+permits %>% count(area) %>% count(n) # dbl-count: how many had that count of area. [useful trick]
+
+# "So it's just useful, to give me a little idea of what's going on"
+```
+
+For this analysis I'll focus on single family homes
+
+```{r}
+permits <- permits %>%
+  mutate(date = year + (month - 1) / 12)
+# v rough, for the plot below. Puts January's datapoint at the '0' position, etc
+
+ggplot(permits, aes(date, f1units)) +
+  geom_point()                          # "It's always a good idea just to start out with points"
+# ...but not very useful here, as most of the data is 'hidden' in a big black blob at the bottom
+
+ggplot(permits, aes(date, f1units)) +
+  geom_line()
+# ...also not very useful, as only get one line. Need to tell it how it's grouped...
+
+ggplot(permits, aes(date, f1units)) +
+  geom_line(aes(group = area))
+# ...helps a little bit (can see some of the big cities), but mostly big black blob again
+```
+
+## Focus
+
+Let's (arbitrarily) focus on big cities. Might bias our results, because maybe big cities are different from small cities in some ways? ["But even taking that into account, I think it's a good place to start, with the places you've got the most data" (and later extend the analysis to look at all of the cities)]
+
+```{r}
+f1units <- permits %>%
+  group_by(area) %>%                    # "let's start by figuring out which are the big cities"
+  summarise(mean = mean(f1units)) %>%   # avg number of single family dwellings built each month
+  arrange(desc(mean))                   # (381 rows)
+
+f1units %>% filter(mean > 100)          # look at cities with (arbitrarily) >100 permits/mth
+
+# "And then now we need to go back and find all the permits for those (96) cities. And I'm going to do that with a semi-join""
+```
+
+
+
+
