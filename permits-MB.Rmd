@@ -72,8 +72,35 @@ f1units <- permits %>%
 
 f1units %>% filter(mean > 100)          # look at cities with (arbitrarily) >100 permits/mth
 
-# "And then now we need to go back and find all the permits for those (96) cities. And I'm going to do that with a semi-join""
+# "And then now we need to go back and find all the permits for those (96) cities. And I'm going to do that with a `semi_join`..."
+
+permits_big <- permits %>%
+  semi_join(f1units %>% filter(mean > 100))
+
+permits_big                             # (11424 rows)
 ```
+
+"For now, kind of focus on this process : I try out something, I look at the result, and then see how that's going(?)"
+"And let's go up and redo this plot. So now, instead of all of the permits data, I'm just going to look at the permits data for the bigger cities"
+
+```{r}
+ggplot(permits_big, aes(date, f1units)) +
+  geom_line(aes(group = area), alpha = 0.1) # 'one quick trick is to make the lines transparent'
+
+ggplot(permits_big, aes(date, f1units)) +
+  geom_line(aes(group = area), alpha = 0.1) +
+  scale_y_log10()                           # "maybe I could try doing a log10 transformation"
+
+"Looks like ... maybe there's actually (like) some kind of common pattern going on within a year. And then maybe there's some sort of common long-term trends. One easy way to make those long-term trends a little easier to see is to add on a smoothed line..."
+
+ggplot(permits_big, aes(date, f1units)) +
+  geom_line(aes(group = area), alpha = 0.1) +
+  scale_y_log10() +
+  geom_smooth(se = FALSE)
+```
+
+"But it's still kind of hard to see, because of these 2 problems : That there's the pattern within the year, and it's still kind of hard to see individual cities"
+--[12:00 min]
 
 
 
