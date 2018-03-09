@@ -14,33 +14,35 @@ permits_raw                                                      # print data, t
 ```
 
 * area = metropolitan standard area
-* date = month / year (character vector, or strings)
+* date = month / year (currently stored as character vector, or strings)
 * f1 = 1 family house; f24 = 2-4 families; f5 = 5+ family house
-* units = number of buildings; change in units; value = average value of building; valchange = change in value
+* units = number of buildings; change in units; value = avg value of building; valchange = change in value
 
 ```{r}
+# "The data goes back quite a long time. I'm just going to start off by looking at the last 10 years of data" ... "If I want to filter by year, I really need a `year` variable first"
+
 ?separate
 
 permits <- permits_raw %>%
-  separate(date, c("month", "year"), "/", convert = TRUE) %>%     # `convert` to get m&y integers
-  filter(year > 2007) %>%         # last 10yrs. (`separate()` enables this filter, with a `year`)
-  select(-ends_with("change"))    # remove others' calculated fields, in case they are wrong
-permits
+  separate(date, c("month", "year"), "/", convert = TRUE) %>%   # `convert` gets m&y as integers
+  filter(year > 2007) %>%       # last 10yrs. (`separate()` enables this filter, with a `year`)
+  select(-ends_with("change"))  # to remove others' calculated fields, in case they are wrong
+permits                         # (44707 rows)
 ```
 
 ## Basic EDA
 
 ```{r}
-# "...just to get a sense of (like) what's going on in this dataset.
-# And a really useful tool for that is just a `count()`"...
+# "...just to get a sense of (like) what's going on in this dataset. And a really useful tool for that is just a `count()`"...
+
 permits %>% count(year)              # `n` is ~4500 per year
 permits %>% count(area)              # `n` is usually 119 per area...
-permits %>% count(area) %>% count(n) # dbl-count: how many had that count of area. [useful trick]
+permits %>% count(area) %>% count(n) # dbl-count: qty having that count of area. [useful trick]
 
 # "So it's just useful, to give me a little idea of what's going on"
 ```
 
-For this analysis I'll focus on single family homes
+For this analysis I'll focus on single family homes (`f1units`)
 
 ```{r}
 permits <- permits %>%
