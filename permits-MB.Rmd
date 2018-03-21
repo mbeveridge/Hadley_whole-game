@@ -2,7 +2,6 @@
 
 ```{r setup}
 library(tidyverse)
-library(stringr)          # (no mention in video, but "Model" section needs it for `str_detect`)
 ```
 
 
@@ -117,29 +116,43 @@ ggplot(permits_big, aes(date, f1units)) +
 "And it's going to be easiest to do that if I start by focusing on just one city..."
 
 ```{r}
-houston <- permits %>% filter(str_detect(area, "Houston"))  # (`str_detect` needs **stringr**)
-houston %>% count(area)                                     # (119 rows)
+library(stringr)                 # (no mention in video, but needed for `str_detect`, just below)
 
-ggplot(houston, aes(date, f1units)) +                 # (as for previous chunk, but just Houston)
-  geom_line(aes(group = area))                        # (`group` not needed here)
+houston <- permits %>% filter(str_detect(area, "Houston"))
+houston %>% count(area)                           # (119 rows)
 
-ggplot(houston, aes(month, f1units)) +                # to see seasonal effect
-  geom_line(aes(group = year)) +
-  scale_y_log10()                                     # (this isn't helpful)
+ggplot(houston, aes(date, f1units)) +             # (as for previous chunk, but just Houston)
+  geom_line(aes(group = area))                    # (`group` not needed here)
+
+ggplot(houston, aes(month, f1units)) +            # emphasise 'pretty strong seasonal trend'...
+  geom_line(aes(group = year)) +                  # ...by separate line for each year
+  scale_y_log10()                                 # (this 'log' scaling isn't helpful this time)
 ```
 
-[@14'00]
+[@13'30]
 
-Question :
+"There's some evidence of a strong seasonal pattern here"
+
+Questions :
 
 * Is this pattern the same everywhere?
 * What drives it? Is it the weather?
-* Houston in July is less pleasant than Houston in Dec
+* Houston in July is less pleasant than Houston in December
+
+[@14'30]
+
+"Let's try and extract that pattern out. We're going to do this by using a linear model..."
 
 ```{r}
+library(model)
 
+houston_mod <- lm(log(f1units) - factor(month), data = houston)
 
-# Now, I don't believe that this is a good model. I'm just using it as a way to partition the signal into months [15:04min]
+"going to treat that `month` not as a continuous variable, but as a categorical variable"
+
+# Now, I don't believe that this is a good model. I know there's other stuff going on here. I'm just using it as a way to partition the signal into months
+
+# [@15'04]
 
 # residuals ~16min
 
