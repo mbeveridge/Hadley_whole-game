@@ -144,17 +144,22 @@ Questions :
 "Let's try and extract that pattern out. We're going to do this by using a linear model..."
 
 ```{r}
-library(model)
+library(modelr)
 
-houston_mod <- lm(log(f1units) - factor(month), data = houston)
+# "I'm going to try and predict the number of units based on just the month. And I'm going to treat that month, rather than a continuous value [sic], but as a categorical variable"
 
-"going to treat that `month` not as a continuous variable, but as a categorical variable"
+houston_mod <- lm(log(f1units) ~ factor(month), data = houston) # create a model of Houston
 
-# Now, I don't believe that this is a good model. I know there's other stuff going on here. I'm just using it as a way to partition the signal into months
+# "...I don't believe this model is a good model (right?). I know there's other stuff going on here. I'm just using it as a way to (kind of) partition the signal into this monthly effect" [@15'04]
 
-# [@15'04]
+houston %>%
+  add_predictions(houston_mod)  %>%   # "to add a column [`pred`] of predictions to my dataframe"
+  ggplot(aes(date, pred)) +
+  geom_line()
 
-# residuals ~16min
+# "...And you can see that what this model's captured is just this repeating seasonal pattern" ... "What might be more useful is to look at the residuals from the model"...
+
+# [@16'00]
 
 ```
 
