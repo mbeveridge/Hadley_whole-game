@@ -2,24 +2,26 @@
 
 ```{r setup}
 library(tidyverse)
+library(stringr)          # (no mention in video, but "Model" section needs it for `str_detect`)
 ```
+
 
 ## Data import
 
 Data downloaded from https://www.recenter.tamu.edu/data/building-permits/
 
 ```{r}
-permits_raw <- read_csv("dataPermit_full.csv", na = "null")      # change any "Null" to "NA"
+permits_raw <- read_csv("dataPermit_full.csv", na = "null")      # change any "null" to "NA"
 permits_raw                                                      # print data, to look at
 ```
 
-* area = metropolitan standard area
+* area = metropolitan standard area (which is how census divides up the country in big cities)
 * date = month / year (currently stored as character vector, or strings)
 * f1 = 1 family house; f24 = 2-4 families; f5 = 5+ family house
 * units = number of buildings; change in units; value = avg value of building; valchange = change in value
 
 ```{r}
-# "The data goes back quite a long time. I'm just going to start off by looking at the last 10 years of data" ... "If I want to filter by year, I really need a `year` variable first"
+# "The data goes back quite a long time. So, I'm just going to start off by looking at the last 10 years of data" ... "If I want to filter by year, I really need a `year` variable first"
 
 ?separate
 
@@ -30,7 +32,8 @@ permits <- permits_raw %>%
 permits                         # (44707 rows)
 ```
 
-## Basic EDA
+
+## Basic EDA [@5'00]
 
 ```{r}
 # "...just to get a sense of (like) what's going on in this dataset. And a really useful tool for that is just a `count()`"...
@@ -59,10 +62,11 @@ ggplot(permits, aes(date, f1units)) +
 
 ggplot(permits, aes(date, f1units)) +
   geom_line(aes(group = area))
-# ...helps a little bit (can see some of the big cities), but mostly big black blob again
+# ...helps a little bit (can see a few of the bigger cities), but mostly big black blob again
 ```
 
-## Focus
+
+## Focus [@7'45]
 
 Let's (arbitrarily) focus on big cities. Might bias our results, because maybe big cities are different from small cities in some ways? ["But even taking that into account, I think it's a good place to start, with the places you've got the most data" (and later extend the analysis to look at all of the cities)]
 
@@ -77,10 +81,12 @@ f1units %>% filter(mean > 100)          # look at cities with (arbitrarily) >100
 # "And then now we need to go back and find all the permits for those (96) cities. And I'm going to do that with a `semi_join`..."
 
 permits_big <- permits %>%
-  semi_join(f1units %>% filter(mean > 100))
+  semi_join(f1units %>% filter(mean > 100)) # 'give me all the permits that match these cities'
 
 permits_big                             # (11424 rows)
 ```
+
+[@10'00]
 
 "For now, kind of focus on this process : I try out something, I look at the result, and then see how that's going(?)"
 "And let's go up and redo this plot. So now, instead of all of the permits data, I'm just going to look at the permits data for the bigger cities"
@@ -102,22 +108,27 @@ ggplot(permits_big, aes(date, f1units)) +
 ```
 
 "But it's still a little hard to see, because we've got these 2 problems : That we've got the strong pattern within the year, and the cities are still kind of spread out"
---[12:00 min]
 
-## Model
+
+## Model [@12'00]
 
 "Can we do better? And to do that, we're going to use a model. Because models are really powerful tools for partitioning the signal. So we're going to try and partition this pattern - this signal - into this monthly component and then what's left, maybe this smoother long-term trend"
 
 "And it's going to be easiest to do that if I start by focusing on just one city..."
 
 ```{r}
-houston <- permits %>% filter()
-xxxx
+houston <- permits %>% filter(str_detect(area, "Houston"))  # (`str_detect` needs **stringr**)
+houston %>% count(area)                                     # (119 rows)
 
-ggplot(houston, aes(date, f1units)) +
-  geom_line(aes(group = area))
+ggplot(houston, aes(date, f1units)) +                 # (as for previous chunk, but just Houston)
+  geom_line(aes(group = area))                        # (`group` not needed here)
+
+ggplot(houston, aes(month, f1units)) +                # to see seasonal effect
+  geom_line(aes(group = year)) +
+  scale_y_log10()                                     # (this isn't helpful)
 ```
 
+[@14'00]
 
 Question :
 
@@ -138,7 +149,7 @@ Question :
 * What's driving this trend?
 * What happened around 2010?
 
-## Extend the model to every city [17:00min]
+## Extend the model to every city [@17'00]
 
 ```{r}
 
@@ -146,7 +157,8 @@ Question :
 
 "much much easier to see the long-term trend, now that we've removed those short-term"
 "So let's just quickly recap what we're doing in this data analysis"
-[19:40min]
+
+[@19'40]
 
 
 
