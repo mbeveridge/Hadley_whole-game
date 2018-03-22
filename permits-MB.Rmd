@@ -174,7 +174,7 @@ houston %>%
 ## Extend the model to every city [@17'00] [without any real explanations]
 
 ```{r}
-# Here I'm going to create a new dataframe, where I've nested the data" ... "This is just (kind of) a useful data structure for the data that we're working with"
+# Here I'm (first of all) going to create a new dataframe, where I've nested the data. So basically (what I'm going to do is) have a dataframe where I've got one row for each city and then inside that dataframe I've got the data for each individual city. This is just (kind of) a useful data structure for the data that we're working with"
 
 by_area <- permits_big %>%
   group_by(area) %>%
@@ -185,28 +185,33 @@ area_model <- function(df) {
   lm(log10(f1units + 1) ~ factor(month), data = df)         # (don't think `+1` is needed)
 }
 
-# "Then I'm going to do some tricks with mutate and some functions from the **purrr** package"...
+# [@17'35] "And then I'm going to do some tricks with mutate and run some functions from the **purrr** package"...
 library(purrr)
 
 detrended <- by_area %>% mutate(
   model = map(data, area_model),
   resids = map2(data, model, add_residuals)
   ) %>% unnest(resids)
-# ..."These are tools that let you generalise. Once you've done it for one area, how you can do it for all areas. And I'm just going to skim over that for now" [@18'00]
+# [@17'45] "`map` and `map2` and this group data ...are tools that allow you to (kind of) quickly generalise. Once you've done it for one area, how you do it for all of the areas. And I'm just going to (kind of) skim over that for now" [@18'00]
 
+# [@18'15] "I'm going to find my original plotting code. And now instead of plotting `f1units` I'm going to just plot the residuals from them" [@18'30]
 ggplot(detrended, aes(date, resid)) +
   geom_line(aes(group = area), alpha = 0.1) +
   geom_smooth(se = FALSE)
 
 ```
 
-"What we've got is this plot where it's much much easier to see the long-term trend, now that we've removed those short-term"
-"So let's just quickly recap what we're doing in this data analysis"
+<18'30-19'25 : trying to find&correct an error>
 
-[@19'40]
+[@19'25] "What we've got now is this plot that [sic] it's much much easier to see the long-term trend, now that we've removed those short-term [unintelligible]. So let's just quickly recap what we're doing in this data analysis" [@19'40]
 
-
-
+* Load in the Tidyverse
+* Read in the data
+* Tidying, making sure we had useful variables (eg. splitting into m&y)
+* EDA, to get a quick idea (counting)
+* Visualisation
+* Most of the rest of the analysis was motivated by one viz, and how we could make it more useful
+[@20'30]
 
 
 
