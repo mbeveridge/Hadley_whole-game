@@ -212,16 +212,15 @@ ggplot(detrended, aes(date, resid)) +
 * Bit of tidying, making sure we'd got useful variables (eg. splitting date into m&y)
 * Quick EDA, to get an idea of what's going on in the dataset (counting is super-duper-useful)
 * Visualisation
-* The rest of the analysis was motivated by one viz, and how we could make it more useful
-
+* The rest of the analysis was motivated by one viz, and how we could make it more useful...
 [@20'30]
-* Narrow-focusing in on the bigger cities
-*
-* Manipulation of the plot; added a log scale; smooth curve
+* Narrow-focusing in on just the bigger cities
+* Manipulations of the plot; added a log scale; added a smooth curve
+[20'50]
+* Could we use a model : could we partition this pattern into monthly and longer-term trend
+* We did that first with Houston (one city)
+* Then generalise solution to all of the cities
+* "And then that ends up with this final plot, which is kind of interesting"
+[@21'20]
 
-* Could we partition into monthly and long-term trend
-* One city
-* Generalise
-[@21'30]
-
-
+[@22'10 END]
