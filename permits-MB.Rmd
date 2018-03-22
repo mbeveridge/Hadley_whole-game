@@ -203,15 +203,25 @@ ggplot(detrended, aes(date, resid)) +
 
 <18'30-19'25 : trying to find&correct an error>
 
-[@19'25] "What we've got now is this plot that [sic] it's much much easier to see the long-term trend, now that we've removed those short-term [unintelligible]. So let's just quickly recap what we're doing in this data analysis" [@19'40]
+[@19'25] "What we've got now is this plot that [sic] it's much much easier to see the long-term trend, now that we've removed those short-term ones."
 
-* Load in the Tidyverse
-* Read in the data
-* Tidying, making sure we had useful variables (eg. splitting into m&y)
-* EDA, to get a quick idea (counting)
+"So let's just (kind of) quickly recap what we do in this data analysis"...
+[@19'40]
+* Load-in the Tidyverse
+* Read-in the data
+* Bit of tidying, making sure we'd got useful variables (eg. splitting date into m&y)
+* Quick EDA, to get an idea of what's going on in the dataset (counting is super-duper-useful)
 * Visualisation
-* Most of the rest of the analysis was motivated by one viz, and how we could make it more useful
-[@20'30]
+* The rest of the analysis was motivated by one viz, and how we could make it more useful
 
+[@20'30]
+* Narrow-focusing in on the bigger cities
+*
+* Manipulation of the plot; added a log scale; smooth curve
+
+* Could we partition into monthly and long-term trend
+* One city
+* Generalise
+[@21'30]
 
 
